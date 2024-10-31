@@ -5,7 +5,7 @@ Deletion-resilient hypermedia pagination
 
 import csv
 import math
-from typing import List
+from typing import List, Dict
 
 
 class Server:
@@ -33,12 +33,8 @@ class Server:
         """
         if self.__indexed_dataset is None:
             dataset = self.dataset()
-            truncated_dataset = dataset[:1000]
-            self.__indexed_dataset = {
-                i: dataset[i] for i in range(len(dataset))
-            }
+            self.__indexed_dataset = {i: dataset[i] for i in range(len(dataset))}
         return self.__indexed_dataset
-
 
     def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict:
         """
@@ -48,21 +44,24 @@ class Server:
         :param page_size:
         :return:
         """
-        assert type(index) == int
-        assert type(page_size) == int
+        assert isinstance(index, int), "Index must be an integer."
+        assert isinstance(page_size, int), "Page size must be an integer."
         csv = self.indexed_dataset()
         csv_size = len(csv)
-        assert 0 <= index < csv_size
+        assert 0 <= index < csv_size, "Index out of range."
+
         data = []
-        _next = index
+        next_index = index
+
         for _ in range(page_size):
-            while not csv.get(_next):
-                _next += 1
-            data.append(csv.get(_next))
-            _next += 1
+            while next_index not in csv:
+                next_index += 1
+            data.append(csv[next_index])
+            next_index += 1
+
         return {
             "index": index,
             "data": data,
-            "page_size": page_size,
-            "next_index": _next
+            "page_size": len(data),
+            "next_index": next_index
         }

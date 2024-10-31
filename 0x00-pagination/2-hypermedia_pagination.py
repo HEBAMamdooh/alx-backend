@@ -10,8 +10,8 @@ from typing import Tuple, List, Dict, Any
 def index_range(page: int, page_size: int) -> Tuple[int, int]:
     """
     return a tuple of size two containing a start
-    index and an end index corresponding to the 
-    range of indexes to return in a list for 
+    index and an end index corresponding to the
+    range of indexes to return in a list for
     those particular pagination parameters
     :param page:
     :param page_size:
@@ -27,7 +27,6 @@ class Server:
     """
     DATA_FILE = "Popular_Baby_Names.csv"
 
-
     def __init__(self):
         self.__dataset = None
 
@@ -41,7 +40,6 @@ class Server:
             self.__dataset = dataset[1:]
 
         return self.__dataset
-
 
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
         """
@@ -60,7 +58,6 @@ class Server:
         if start >= csv_size:
             return []
         return self.dataset()[start:end]
-
 
     def get_hyper(self, page: int = 1, page_size: int = 10) -> Dict[str, Any]:
         """
